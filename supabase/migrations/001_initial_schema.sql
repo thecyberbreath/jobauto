@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email TEXT NOT NULL UNIQUE,
   full_name TEXT NOT NULL,
-  current_role TEXT,
+  "current_role" TEXT,
   years_of_experience NUMERIC(4, 1) DEFAULT 0.0,
   education TEXT,
   preferred_location TEXT,
@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
 
 -- 2. RESUMES (Private Upload Vault Metadata)
 CREATE TABLE IF NOT EXISTS public.resumes (
@@ -188,7 +189,7 @@ CREATE TABLE IF NOT EXISTS public.interviews (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
   company TEXT NOT NULL,
-  role TEXT NOT NULL,
+  "role" TEXT NOT NULL,
   interview_date TIMESTAMPTZ NOT NULL,
   readiness_score INT DEFAULT 78,
   company_notes TEXT,
@@ -233,9 +234,10 @@ CREATE TABLE IF NOT EXISTS public.notifications (
   title TEXT NOT NULL,
   message TEXT NOT NULL,
   read BOOLEAN DEFAULT FALSE,
-  type TEXT NOT NULL CHECK (type IN ('match', 'interview', 'application', 'system')),
+  "type" TEXT NOT NULL CHECK ("type" IN ('match', 'interview', 'application', 'system')),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
 
 CREATE TABLE IF NOT EXISTS public.audit_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
