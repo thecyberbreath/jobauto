@@ -52,11 +52,15 @@ interface AppContextType {
   candidateProfile: CandidateProfile;
   setCandidateProfile: React.Dispatch<React.SetStateAction<CandidateProfile>>;
   
+  globalSearchQuery: string;
+  setGlobalSearchQuery: (query: string) => void;
+  
   jobs: Job[];
   savedJobIds: string[];
   toggleSaveJob: (jobId: string) => void;
   selectedJob: Job | null;
   setSelectedJob: (job: Job | null) => void;
+
   
   applications: ApplicationRecord[];
   updateApplicationStatus: (appId: string, status: ApplicationStatus) => void;
@@ -87,7 +91,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   
   const [candidateProfile, setCandidateProfile] = useState<CandidateProfile>(initialCandidateProfile);
+  const [globalSearchQuery, setGlobalSearchQuery] = useState<string>('React Developer');
   const [jobs] = useState<Job[]>(initialJobs);
+
   const [savedJobIds, setSavedJobIds] = useState<string[]>(['job-106']);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   
@@ -223,7 +229,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setAuthMode,
         candidateProfile,
         setCandidateProfile,
+        globalSearchQuery,
+        setGlobalSearchQuery,
         jobs,
+
         savedJobIds,
         toggleSaveJob,
         selectedJob,

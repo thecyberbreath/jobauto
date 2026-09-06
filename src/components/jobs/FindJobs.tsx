@@ -15,9 +15,8 @@ import {
 
 
 export const FindJobs: React.FC = () => {
-  const { candidateProfile, setSelectedJob, toggleSaveJob, savedJobIds, addApplicationFromJob, setActiveView } = useApp();
+  const { candidateProfile, globalSearchQuery, setGlobalSearchQuery, setSelectedJob, toggleSaveJob, savedJobIds, addApplicationFromJob, setActiveView } = useApp();
 
-  const [searchQuery, setSearchQuery] = useState('React Developer');
   const [locationQuery, setLocationQuery] = useState('Remote');
   const [selectedWorkModel, setSelectedWorkModel] = useState<WorkModel>('All');
   const [realJobs, setRealJobs] = useState<Job[]>([]);
@@ -25,16 +24,15 @@ export const FindJobs: React.FC = () => {
   const [searchError, setSearchError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
 
-  const handleSearch = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!searchQuery.trim()) return;
+  const executeSearch = async (queryToSearch: string) => {
+    if (!queryToSearch.trim()) return;
 
     setIsSearching(true);
     setSearchError(null);
     setHasSearched(true);
 
     try {
-      const results = await JobSourceManager.fetchRealJobs(searchQuery, candidateProfile, locationQuery);
+      const results = await JobSourceManager.fetchRealJobs(queryToSearch, candidateProfile, locationQuery);
       setRealJobs(results);
     } catch (err: any) {
       console.error('[FindJobs] Error fetching jobs:', err);
@@ -44,10 +42,16 @@ export const FindJobs: React.FC = () => {
     }
   };
 
-  // Perform initial search on mount
+  const handleSearch = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    executeSearch(globalSearchQuery);
+  };
+
+  // Perform search whenever globalSearchQuery changes
   useEffect(() => {
-    handleSearch();
-  }, []);
+    executeSearch(globalSearchQuery);
+  }, [globalSearchQuery]);
+
 
   const filteredJobs = realJobs.filter((j) => {
     const matchesModel = selectedWorkModel === 'All' || j.workModel === selectedWorkModel;
@@ -81,11 +85,12 @@ export const FindJobs: React.FC = () => {
             <Search className="w-4 h-4 text-[#6c6a64] absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search jobs — e.g. React Developer, Full Stack, Product Engineer..."
+              value={globalSearchQuery}
+              onChange={(e) => setGlobalSearchQuery(e.target.value)}
+              placeholder="Search jobs — e.g. React Developer, UI Engineer, Full Stack..."
               className="w-full pl-10 pr-4 py-2.5 text-xs bg-[#efe9de] border border-[#e6dfd8] rounded-xl text-[#141413] focus:outline-none focus:border-[#cc785c] transition-all placeholder:text-[#6c6a64]"
             />
+
           </div>
 
           <div className="relative md:col-span-4">

@@ -6,6 +6,8 @@ export const Header: React.FC = () => {
   const {
     activeView,
     setActiveView,
+    globalSearchQuery,
+    setGlobalSearchQuery,
     isAuthenticated,
     setIsAuthenticated,
     setIsAuthModalOpen,
@@ -14,6 +16,7 @@ export const Header: React.FC = () => {
     notifications,
     markNotificationRead
   } = useApp();
+
 
   const [showNotifications, setShowNotifications] = useState(false);
   const unreadCount = notifications.filter((n) => !n.read).length;
@@ -54,15 +57,26 @@ export const Header: React.FC = () => {
             <a href="#security" className="hover:text-[#cc785c] transition-colors">Privacy & Safety</a>
           </nav>
         ) : (
-          <div className="hidden md:flex items-center flex-1 max-w-md mx-8 relative">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (globalSearchQuery.trim()) {
+                setActiveView('jobs');
+              }
+            }}
+            className="hidden md:flex items-center flex-1 max-w-md mx-8 relative"
+          >
             <Search className="w-4 h-4 text-[#6c6a64] absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search jobs, skills, companies, or applications..."
+              value={globalSearchQuery}
+              onChange={(e) => setGlobalSearchQuery(e.target.value)}
+              placeholder="Search jobs — e.g. UI engineer, React, Node.js..."
               className="w-full pl-10 pr-4 py-1.5 text-xs bg-[#efe9de] border border-[#e6dfd8] rounded-lg text-[#141413] focus:outline-none focus:border-[#cc785c] transition-all placeholder:text-[#6c6a64]"
             />
-          </div>
+          </form>
         )}
+
 
         {/* User Action Controls */}
         <div className="flex items-center space-x-3 sm:space-x-4">
