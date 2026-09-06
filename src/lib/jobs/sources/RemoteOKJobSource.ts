@@ -29,14 +29,15 @@ export class RemoteOKJobSource implements JobSource {
           const tags = Array.isArray(item.tags) ? item.tags.join(' ').toLowerCase() : '';
           const jobLoc = (item.location || '').toLowerCase();
 
-          // Strict Query Match Guarantee
+          // 1. Strict Query Match
           const matchesQuery = title.includes(queryLower) || desc.includes(queryLower) || tags.includes(queryLower);
           if (!matchesQuery) return false;
 
-          // Strict Location Match Guarantee
+          // 2. Location Match
           if (locLower && locLower !== 'all' && locLower !== 'remote') {
-            const matchesLoc = jobLoc.includes(locLower) || jobLoc.includes('worldwide') || jobLoc.includes('anywhere');
-            if (!matchesLoc) return false;
+            const isGlobalRemote = jobLoc.includes('worldwide') || jobLoc.includes('anywhere') || jobLoc.includes('global') || jobLoc.includes('remote');
+            const matchesExactLoc = jobLoc.includes(locLower);
+            if (!isGlobalRemote && !matchesExactLoc) return false;
           }
 
           return true;

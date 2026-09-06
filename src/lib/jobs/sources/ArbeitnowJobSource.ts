@@ -28,14 +28,15 @@ export class ArbeitnowJobSource implements JobSource {
           const tags = Array.isArray(raw.tags) ? raw.tags.join(' ').toLowerCase() : '';
           const jobLoc = (raw.location || '').toLowerCase();
 
-          // Strict keyword query match
+          // 1. Strict Query Match
           const matchesQuery = title.includes(queryLower) || desc.includes(queryLower) || tags.includes(queryLower);
           if (!matchesQuery) return false;
 
-          // Strict location match if location provided
+          // 2. Location Match
           if (locLower && locLower !== 'all' && locLower !== 'remote') {
-            const matchesLoc = jobLoc.includes(locLower) || (raw.remote ? true : false);
-            if (!matchesLoc) return false;
+            const isGlobalRemote = raw.remote || jobLoc.includes('remote') || jobLoc.includes('worldwide') || jobLoc.includes('global');
+            const matchesExactLoc = jobLoc.includes(locLower);
+            if (!isGlobalRemote && !matchesExactLoc) return false;
           }
 
           return true;
@@ -46,7 +47,7 @@ export class ArbeitnowJobSource implements JobSource {
           source: 'Indeed',
           sourceJobId: `arbeit-${raw.slug || index}`,
           title: raw.title,
-          company: raw.company_name || 'Global Enterprise',
+          company: raw.company_name || 'Global Tech',
           companyLogo: `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(raw.company_name || 'Company')}`,
           location: raw.location || (raw.remote ? 'Remote' : 'On-site'),
           workModel: raw.remote ? 'Remote' : 'Onsite',
@@ -69,7 +70,7 @@ export class ArbeitnowJobSource implements JobSource {
             },
             whyMatch: [
               `Direct search query match for "${query}"`,
-              `Location match: ${raw.location || 'Remote'}`,
+              `Location: ${raw.location || 'Remote'}`,
               'Verified live job posting'
             ],
             missingRequirements: [],

@@ -28,14 +28,15 @@ export class JobicyJobSource implements JobSource {
           const category = (raw.jobCategory || '').toLowerCase();
           const jobGeo = (raw.jobGeo || '').toLowerCase();
 
-          // Strict keyword query match
+          // 1. Strict Query Match
           const matchesQuery = title.includes(queryLower) || desc.includes(queryLower) || category.includes(queryLower);
           if (!matchesQuery) return false;
 
-          // Location match if provided
+          // 2. Location Match
           if (locLower && locLower !== 'all' && locLower !== 'remote') {
-            const matchesLoc = jobGeo.includes(locLower) || jobGeo.includes('anywhere') || jobGeo.includes('global') || jobGeo.includes('worldwide');
-            if (!matchesLoc) return false;
+            const isGlobalRemote = jobGeo.includes('anywhere') || jobGeo.includes('global') || jobGeo.includes('worldwide') || jobGeo.includes('remote');
+            const matchesExactLoc = jobGeo.includes(locLower);
+            if (!isGlobalRemote && !matchesExactLoc) return false;
           }
 
           return true;
@@ -46,7 +47,7 @@ export class JobicyJobSource implements JobSource {
           source: 'Naukri',
           sourceJobId: `jobicy-${raw.id || index}`,
           title: raw.jobTitle,
-          company: raw.companyName || 'Global Enterprise',
+          company: raw.companyName || 'Global Tech',
           companyLogo: raw.companyLogo || `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(raw.companyName || 'Company')}`,
           location: raw.jobGeo || 'Remote',
           workModel: 'Remote',
@@ -71,7 +72,7 @@ export class JobicyJobSource implements JobSource {
             },
             whyMatch: [
               `Direct search query match for "${query}"`,
-              `Location match: ${raw.jobGeo || 'Remote'}`,
+              `Location: ${raw.jobGeo || 'Remote'}`,
               'Verified live job posting'
             ],
             missingRequirements: [],
