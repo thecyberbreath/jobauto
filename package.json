@@ -1,7 +1,7 @@
 {
   "name": "jobapply",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,9 +11,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.115.0",
     "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",
+    "groq-sdk": "^0.15.0",
     "lucide-react": "^1.41.0",
+    "mammoth": "^1.12.2",
+    "pdf-parse": "^1.1.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "tailwind-merge": "^3.6.0"
@@ -22,6 +27,7 @@
     "@tailwindcss/vite": "^4.3.3",
     "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^24.13.3",
+    "@types/pdf-parse": "^1.1.4",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.1.0",
