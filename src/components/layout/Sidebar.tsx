@@ -7,11 +7,7 @@ import {
   Kanban,
   FileCheck2,
   Wand2,
-  Layers,
-  GraduationCap,
-  BarChart3,
   Settings,
-  ShieldAlert,
   Sparkles,
   Zap
 } from 'lucide-react';
@@ -24,24 +20,21 @@ interface NavItem {
 }
 
 export const Sidebar: React.FC = () => {
-  const { activeView, setActiveView, applications, jobs, bulkQueue } = useApp();
+  const { activeView, setActiveView, applications, jobs } = useApp();
 
   const highMatchJobsCount = jobs.filter((j) => j.matchDetails.overallScore >= 90).length;
   const activeAppsCount = applications.filter((a) => a.status !== 'Rejected').length;
-  const bulkCount = bulkQueue.length;
+
 
   const navItems: NavItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'jobs', label: 'Find Jobs', icon: Search, badge: `${highMatchJobsCount}` },
-    { id: 'tracker', label: 'Applications', icon: Kanban, badge: `${activeAppsCount}` },
-    { id: 'resume', label: 'AI Resume Optimizer', icon: FileCheck2 },
-    { id: 'tools', label: 'Cover Letter & Q&A', icon: Wand2 },
-    { id: 'bulk', label: 'Bulk Review Queue', icon: Layers, badge: `${bulkCount}` },
-    { id: 'interview', label: 'Interview Coach', icon: GraduationCap },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-    { id: 'settings', label: 'Settings', icon: Settings },
-    { id: 'admin', label: 'Admin Dashboard', icon: ShieldAlert }
+    { id: 'jobs', label: 'Find Jobs', icon: Search, badge: highMatchJobsCount > 0 ? `${highMatchJobsCount}` : undefined },
+    { id: 'tracker', label: 'Applications', icon: Kanban, badge: activeAppsCount > 0 ? `${activeAppsCount}` : undefined },
+    { id: 'resume', label: 'Resume', icon: FileCheck2 },
+    { id: 'tools', label: 'AI Assistant', icon: Wand2 },
+    { id: 'settings', label: 'Settings', icon: Settings }
   ];
+
 
   return (
     <aside className="w-64 shrink-0 hidden lg:block border-r border-[#e6dfd8] bg-[#faf9f5] p-4 space-y-6 min-h-[calc(100vh-4rem)]">
@@ -68,9 +61,9 @@ export const Sidebar: React.FC = () => {
       {/* Navigation List */}
       <div className="space-y-1">
         <div className="text-[10px] font-mono font-semibold text-[#6c6a64] uppercase tracking-widest px-3 mb-2">
-          Core Workspace
+          Navigation
         </div>
-        {navItems.slice(0, 7).map((item) => {
+        {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeView === item.id;
           return (
@@ -99,31 +92,8 @@ export const Sidebar: React.FC = () => {
             </button>
           );
         })}
-
-        <div className="text-[10px] font-mono font-semibold text-[#6c6a64] uppercase tracking-widest px-3 pt-4 mb-2">
-          Insights & System
-        </div>
-        {navItems.slice(7).map((item) => {
-          const Icon = item.icon;
-          const isActive = activeView === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => setActiveView(item.id)}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${
-                isActive
-                  ? 'bg-[#efe9de] text-[#141413] font-semibold border border-[#e6dfd8] shadow-sm'
-                  : 'text-[#3d3d3a] hover:text-[#141413] hover:bg-[#efe9de]/50'
-              }`}
-            >
-              <div className="flex items-center space-x-2.5">
-                <Icon className={`w-4 h-4 ${isActive ? 'text-[#cc785c]' : 'text-[#6c6a64]'}`} />
-                <span>{item.label}</span>
-              </div>
-            </button>
-          );
-        })}
       </div>
+
 
       {/* Upgrade Banner in Dark Navy Surface */}
       <div className="p-4 rounded-xl bg-[#181715] text-white text-center space-y-2 border border-[#252320]">
